@@ -18,7 +18,7 @@ Integration meeting
 processes for Superset new page
 
     create permissions 
-        can_publish_chart
+        can publish chart
         can_review_chart
         can_report_explore
 

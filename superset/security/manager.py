@@ -842,8 +842,8 @@ class SupersetSecurityManager(SecurityManager):
                     "can_list",
                     "can_edit",
                     "can_add",
-                    "can_reject_report",
-                    "can_publish_report",
+                    "can reject report",
+                    "can publish report",
                 }
                 and pvm.view_menu.name in self.REPORT_USER_ONLY_MODEL_VIEWS
             )

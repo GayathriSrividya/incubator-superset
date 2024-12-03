@@ -184,7 +184,7 @@ class ReportAPI(BaseSupersetView):
         )
         if security_manager.can_access("can_submit_report", "ReportAPI"):
             role = "creator"
-        elif security_manager.can_access("can_publish_report", "ReportAPI"):
+        elif security_manager.can_access("can publish report", "ReportAPI"):
             role = "reviewer"
         else:
             role = "any"
@@ -392,7 +392,7 @@ class ReportAPI(BaseSupersetView):
         slice_id = form_data.get("sliceId")
         slc = db.session.query(Slice).filter_by(id=slice_id).one_or_none()
 
-        if not security_manager.can_access("can_reject_report", "ReportAPI"):
+        if not security_manager.can_access("can reject report", "ReportAPI"):
             return json_error_response(
                 _("You don't have the rights to ") + _("reject this ") + _("report"),
                 status=400,
@@ -430,7 +430,7 @@ class ReportAPI(BaseSupersetView):
         slice_id = form_data.get("sliceId")
         slc = db.session.query(Slice).filter_by(id=slice_id).one_or_none()
 
-        if not security_manager.can_access("can_publish_report", "ReportAPI"):
+        if not security_manager.can_access("can publish report", "ReportAPI"):
             return json_error_response(
                 _("You don't have the rights to ") + _("publish this ") + _("report"),
                 status=400,
