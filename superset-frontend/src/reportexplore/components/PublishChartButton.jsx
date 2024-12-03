@@ -373,7 +373,7 @@ export default class PublishChartButton extends React.Component {
     let reportParams = { sliceId: slice.slice_id };
 
     // Check if user has reviewer permission instead of checking role string
-    const isReviewer = role && role.permissions && role.permissions.includes('can reject report');
+    const isReviewer = role && role.permissions && role.permissions.includes('can_reject_report');
     console.log('User has reviewer permission:', isReviewer);
 
     const url = isReviewer ? "/reportapi/publish_report" : "/reportapi/submit_report"
@@ -464,7 +464,7 @@ export default class PublishChartButton extends React.Component {
     console.log('Component rendered with role:', role);
 
     const { reportStatus, toasts } = this.state
-    const modalTitle = role && role.permissions && role.permissions.includes('can reject report') ? t('Publish Report') : t('Submit Report');
+    const modalTitle = role && role.permissions && role.permissions.includes('can_reject_report') ? t('Publish Report') : t('Submit Report');
     return role == 'creator' || (role == 'reviewer' && reportStatus != "draft" && !!reportStatus) ? (
       <span>
         <ModalTrigger
