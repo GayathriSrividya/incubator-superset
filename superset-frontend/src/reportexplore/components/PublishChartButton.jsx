@@ -459,7 +459,7 @@ export default class PublishChartButton extends React.Component {
 
     const { reportStatus, toasts } = this.state
     const { role } = this.props
-
+    console.log(role, reportStatus)
     return role == 'creator' || (role == 'reviewer' && reportStatus != "draft" && !!reportStatus) ? (
       <span>
         <ModalTrigger
