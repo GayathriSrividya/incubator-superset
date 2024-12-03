@@ -98,7 +98,6 @@ export default class PublishChartButton extends React.Component {
       validations: {},
       publishedReportId: "",
       portalHost: "",
-      isIntervalSlider: false,
       showTable: true,
       showBignumber: false,
       bignumberType: "chart",
@@ -165,7 +164,6 @@ export default class PublishChartButton extends React.Component {
       additionalChanges.reportType = report.reportType
       additionalChanges.reportFrequency = report.reportFrequency
       additionalChanges.staticInterval = report.staticInterval
-      additionalChanges.isIntervalSlider = report.isIntervalSlider
       additionalChanges.intervalSlider = report.intervalSlider
     } else if (fieldType == "report") {
       additionalChanges.reportName = ""
@@ -320,7 +318,6 @@ export default class PublishChartButton extends React.Component {
       reportSummary: this.state.reportSummary,
       reportType: this.state.reportType,
       reportFrequency: this.state.reportFrequency,
-      isIntervalSlider: this.state.isIntervalSlider,
       intervalSlider: this.state.intervalSlider,
       chartId: this.state.chartId,
       chartName: this.state.chartName,

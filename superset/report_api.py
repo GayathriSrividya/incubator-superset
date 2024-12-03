@@ -259,7 +259,6 @@ class ReportAPI(BaseSupersetView):
         report.report_type = form_data["reportType"]
         report.report_frequency = form_data["reportFrequency"]
         report.static_interval = form_data["staticInterval"]
-        report.is_interval_slider = form_data["isIntervalSlider"]
         report.interval_slider = form_data["intervalSlider"]
 
         if report.id:
