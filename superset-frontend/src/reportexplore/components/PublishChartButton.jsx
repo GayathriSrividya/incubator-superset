@@ -371,7 +371,7 @@ export default class PublishChartButton extends React.Component {
     console.log('Current user role:', role);
 
     let reportParams = { sliceId: slice.slice_id };
-
+    console.log(JSON.stringify(role));
     // Check if user has reviewer permission instead of checking role string
     const isReviewer = role && role.permissions && role.permissions.includes('can_reject_report');
     console.log('User has reviewer permission:', isReviewer);
