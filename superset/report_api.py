@@ -184,7 +184,7 @@ class ReportAPI(BaseSupersetView):
         )
         if security_manager.can_access("can_submit_report", "ReportAPI"):
             role = "creator"
-        elif security_manager.can_access("can_publish_report", "ReportAPI"):
+        elif security_manager.can_access("can_submit_report", "ReportAPI") and security_manager.can_access("can_publish_report", "ReportAPI"):
             role = "reviewer"
         else:
             role = "any"
