@@ -1019,7 +1019,10 @@ class ReportAPI(BaseSupersetView):
                 "report": report_config
             }
         }
-
+        print(report_config)
+        print(json.dumps(report_config))
+        print(os.environ['PORTAL_API_KEY'])
+        print(json.dumps(headers))
         response = http_client.request(method, url, headers=headers, data=json.dumps(report_config))
         report_id = response.json()['result']['reportId']
         
