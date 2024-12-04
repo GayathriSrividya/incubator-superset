@@ -373,9 +373,9 @@ export default class PublishChartButton extends React.Component {
     let reportParams = { sliceId: slice.slice_id };
     console.log(JSON.stringify(role));
     // Check if user has reviewer permission instead of checking role string
-    const isReviewer = role && role.permissions && role.permissions.includes('can_reject_report');
+    const isReviewer = role === 'reviewer' ? true : false
     console.log('User has reviewer permission:', isReviewer);
-
+    
     const url = isReviewer ? "/reportapi/publish_report" : "/reportapi/submit_report"
     console.log('Using API endpoint:', url);
 
