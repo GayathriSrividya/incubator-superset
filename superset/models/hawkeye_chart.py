@@ -57,6 +57,7 @@ class HawkeyeChart(
         backref=backref("charts", cascade="all, delete-orphan"),
     )
 
+
     slice_rec = relationship(
         "Slice",
         foreign_keys=[slice_id],

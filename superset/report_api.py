@@ -586,15 +586,13 @@ class ReportAPI(BaseSupersetView):
 
 
     def publish_report_portal(self, chart):
-        published_report_id = chart.hawkeye_report.published_report_id
-        print(json.dumps(chart.hawkeye_report))
-        print(chart.hawkeye_report.published_report_id, "hawkeye Published Report ID")
-        print(published_report_id, "Published Report ID")
         if published_report_id is None or published_report_id is "":
             report_config = self.report_config_template(chart)
         else:
             report_config = self.get_report_config(published_report_id)
             try:
+                print(json.dumps(report_config))
+                 
                 report_config.pop("templateurl")
                 report_config.pop("reportid")
                 report_config.pop("reportaccessurl")
