@@ -586,6 +586,7 @@ class ReportAPI(BaseSupersetView):
 
 
     def publish_report_portal(self, chart):
+        published_report_id = chart.hawkeye_report.published_report_id
         if published_report_id is None or published_report_id is "":
             report_config = self.report_config_template(chart)
         else:
