@@ -1053,7 +1053,6 @@ class ReportAPI(BaseSupersetView):
              "parameters": [
                     "$slug"
                 ],
-            "isParameterized": True,
             "reportconfig": {
                 "label": chart.hawkeye_report.report_name,
                 "title": chart.hawkeye_report.report_name,
