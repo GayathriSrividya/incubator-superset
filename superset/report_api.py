@@ -1050,9 +1050,6 @@ class ReportAPI(BaseSupersetView):
                 "enddate": "12-02-2020"
             },
             "reportgenerateddate": datetime.utcnow().ctime(),
-             "parameters": [
-                    "$slug"
-                ],
             "reportconfig": {
                 "label": chart.hawkeye_report.report_name,
                 "title": chart.hawkeye_report.report_name,
