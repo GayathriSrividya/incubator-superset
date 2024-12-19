@@ -851,14 +851,14 @@ class SupersetSecurityManager(SecurityManager):
 
     def _is_report_creator_pvm(self, pvm: PermissionModelView) -> bool:
         """
-        Return True if the FAB permission/view is SQL Lab related, False
-        otherwise.
+        Return True if the permission/view is accessible to Report Creator role.
+        Inherits all Alpha permissions plus report creation specific ones.
 
         :param pvm: The FAB permission/view
-        :returns: Whether the FAB object is SQL Lab related
+        :returns: Whether the FAB object is accessible to Report Creator
         """
 
-        return (
+        return self._is_alpha_pvm(pvm) or (
             pvm.view_menu.name
             in {"ReportCharts"}
             or (
@@ -888,14 +888,14 @@ class SupersetSecurityManager(SecurityManager):
 
     def _is_report_reviewer_pvm(self, pvm: PermissionModelView) -> bool:
         """
-        Return True if the FAB permission/view is SQL Lab related, False
-        otherwise.
+        Return True if the permission/view is accessible to Report Reviewer role.
+        Inherits all Alpha permissions plus report reviewing specific ones.
 
         :param pvm: The FAB permission/view
-        :returns: Whether the FAB object is SQL Lab related
+        :returns: Whether the FAB object is accessible to Report Reviewer
         """
 
-        return (
+        return self._is_alpha_pvm(pvm) or (
             pvm.view_menu.name
             in {"ReportCharts"}
             or (
