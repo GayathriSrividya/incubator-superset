@@ -50,7 +50,7 @@ spec:
                 --email {{ .Values.credentials.adminEmail }} \
                 --password {{ .Values.credentials.adminPassword }} \
                 --role Admin
-                --role 
+           
               
               # Create report reviewer
               echo "Creating report reviewer user..."
