@@ -1,9 +1,7 @@
 """Initialize test users with Report Creator and Report Reviewer roles."""
 from flask_appbuilder.security.sqla.models import User
-from superset import db, security_manager
 
-
-def create_user(username, first_name, last_name, email, role_names, password="admin"):
+def create_user(security_manager, username, first_name, last_name, email, role_names, password="admin"):
     """Create a user with specified roles."""
     user = security_manager.find_user(username)
     if not user:
@@ -24,18 +22,19 @@ def create_user(username, first_name, last_name, email, role_names, password="ad
             else:
                 print(f"Role {role_name} not found")
                 
-        db.session.commit()
+        security_manager.get_session.commit()
         print(f"Created user {username} with roles: {', '.join(role_names)}")
     else:
         print(f"User {username} already exists")
 
 
-def load_test_users():
+def load_test_users(security_manager):
     """Create test users with Report Creator and Report Reviewer roles."""
     print("Creating test users...")
     
     # Create a Report Creator
     create_user(
+        security_manager=security_manager,
         username="report_creator",
         first_name="Report",
         last_name="Creator",
@@ -45,6 +44,7 @@ def load_test_users():
     
     # Create a Report Reviewer
     create_user(
+        security_manager=security_manager,
         username="report_reviewer", 
         first_name="Report",
         last_name="Reviewer",
@@ -54,6 +54,7 @@ def load_test_users():
     
     # Create a user with both roles
     create_user(
+        security_manager=security_manager,
         username="report_admin",
         first_name="Report",
         last_name="Admin",
@@ -63,6 +64,7 @@ def load_test_users():
 
     # Create an admin user
     create_user(
+        security_manager=security_manager,
         username="admin",
         first_name="Super",
         last_name="Admin",

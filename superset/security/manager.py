@@ -635,7 +635,6 @@ class SupersetSecurityManager(SecurityManager):
         from superset import conf
 
         logger.info("Syncing role definition")
-        print("=== Starting Role and Permission Sync ===")
 
         self.create_custom_permissions()
         # Creating default roles
@@ -664,7 +663,7 @@ class SupersetSecurityManager(SecurityManager):
 
         # Create test users with roles
         if conf.get("INIT_TEST_USERS", False):
-            load_test_users()
+            load_test_users(self)
 
     def set_role(self, role_name: str, pvm_check: Callable) -> None:
         """
