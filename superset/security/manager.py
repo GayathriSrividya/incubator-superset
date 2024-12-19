@@ -628,105 +628,21 @@ class SupersetSecurityManager(SecurityManager):
             logger.info("Deleted {} faulty permissions".format(deleted_count))
 
     def sync_role_definitions(self) -> None:
-        """
-        Initialize the Superset application with security roles and such.
-        """
-
+        """Inits the Superset application with security roles and such"""
         from superset import conf
+        from superset.initialization import init_app_users
 
         logger.info("Syncing role definition")
 
         self.create_custom_permissions()
-        # Creating default roles
-        self.set_role("Admin", self._is_admin_pvm)
-        self.set_role("Alpha", self._is_alpha_pvm)
-        self.set_role("Gamma", self._is_gamma_pvm)
-        self.set_role("granter", self._is_granter_pvm)
-        self.set_role("sql_lab", self._is_sql_lab_pvm)
-        self.set_role("Report Creator", self._is_report_creator_pvm)
-        self.set_role("Report Reviewer", self._is_report_reviewer_pvm)
-
-        if conf.get("PUBLIC_ROLE_LIKE_GAMMA", False):
-            self.set_role("Public", self._is_gamma_pvm)
-
-        # Print all permissions for debugging
-        print("\n=== All Permission View Mappings ===")
-        for pvm in self.get_session.query(self.permissionview_model).all():
-            if pvm.permission and pvm.view_menu:
-                print(f"Permission: {pvm.permission.name}, View Menu: {pvm.view_menu.name}")
-
+        self.update_role_schemas()
         self.create_missing_perms()
-
-        # commit role and view menu updates
-        self.get_session.commit()
         self.clean_perms()
-
+        self.sync_role_perms()
+        
         # Create test users with roles
         if conf.get("INIT_TEST_USERS", False):
-            load_test_users(self)
-
-    def set_role(self, role_name: str, pvm_check: Callable) -> None:
-        """
-        Set the FAB permission/views for the role.
-
-        :param role_name: The FAB role name
-        :param pvm_check: The FAB permission/view check
-        """
-
-        logger.info("Syncing {} perms".format(role_name))
-        print(f"\n=== Setting Permissions for Role: {role_name} ===")
-        sesh = self.get_session
-        pvms = sesh.query(ab_models.PermissionView).all()
-        pvms = [p for p in pvms if p.permission and p.view_menu]
-        role = self.add_role(role_name)
-        role_pvms = [p for p in pvms if pvm_check(p)]
-        role.permissions = role_pvms
-        
-        # Print permissions being assigned to the role
-        print(f"Permissions assigned to {role_name}:")
-        for pvm in role_pvms:
-            print(f"- {pvm.permission.name} on {pvm.view_menu.name}")
-            
-        sesh.merge(role)
-        sesh.commit()
-
-    def create_missing_perms(self) -> None:
-        """
-        Creates missing FAB permissions for datasources, schemas and metrics.
-        """
-
-        from superset import db
-        from superset.connectors.base.models import BaseMetric
-        from superset.models import core as models
-
-        print("\n=== Creating Missing Permissions ===")
-        logger.info("Fetching a set of all perms to lookup which ones are missing")
-        all_pvs = set()
-        for pv in self.get_session.query(self.permissionview_model).all():
-            if pv.permission and pv.view_menu:
-                all_pvs.add((pv.permission.name, pv.view_menu.name))
-
-        def merge_pv(view_menu, perm):
-            """Create permission view menu only if it doesn't exist"""
-            if view_menu and perm and (view_menu, perm) not in all_pvs:
-                print(f"Creating new permission: {perm} for view menu: {view_menu}")
-                self.add_permission_view_menu(view_menu, perm)
-
-        print("\nCreating datasource permissions...")
-        datasources = ConnectorRegistry.get_all_datasources(db.session)
-        for datasource in datasources:
-            merge_pv("datasource_access", datasource.get_perm())
-            merge_pv("schema_access", datasource.get_schema_perm())
-
-        print("\nCreating database permissions...")
-        databases = db.session.query(models.Database).all()
-        for database in databases:
-            merge_pv("database_access", database.perm)
-
-        print("\nCreating metrics permissions...")
-        metrics: List[BaseMetric] = []
-        for datasource_class in ConnectorRegistry.sources.values():
-            metrics += list(db.session.query(datasource_class.metric_class).all())
+            init_app_users(self)
 
     def _is_user_defined_permission(self, perm: Model) -> bool:
         """
@@ -1090,3 +1006,66 @@ class SupersetSecurityManager(SecurityManager):
         ids = [f.id for f in self.get_rls_filters(table)]
         ids.sort()  # Combinations rather than permutations
         return ids
+
+    def set_role(self, role_name: str, pvm_check: Callable) -> None:
+        """
+        Set the FAB permission/views for the role.
+
+        :param role_name: The FAB role name
+        :param pvm_check: The FAB permission/view check
+        """
+
+        logger.info("Syncing {} perms".format(role_name))
+        print(f"\n=== Setting Permissions for Role: {role_name} ===")
+        sesh = self.get_session
+        pvms = sesh.query(ab_models.PermissionView).all()
+        pvms = [p for p in pvms if p.permission and p.view_menu]
+        role = self.add_role(role_name)
+        role_pvms = [p for p in pvms if pvm_check(p)]
+        role.permissions = role_pvms
+        
+        # Print permissions being assigned to the role
+        print(f"Permissions assigned to {role_name}:")
+        for pvm in role_pvms:
+            print(f"- {pvm.permission.name} on {pvm.view_menu.name}")
+            
+        sesh.merge(role)
+        sesh.commit()
+
+    def create_missing_perms(self) -> None:
+        """
+        Creates missing FAB permissions for datasources, schemas and metrics.
+        """
+
+        from superset import db
+        from superset.connectors.base.models import BaseMetric
+        from superset.models import core as models
+
+        print("\n=== Creating Missing Permissions ===")
+        logger.info("Fetching a set of all perms to lookup which ones are missing")
+        all_pvs = set()
+        for pv in self.get_session.query(self.permissionview_model).all():
+            if pv.permission and pv.view_menu:
+                all_pvs.add((pv.permission.name, pv.view_menu.name))
+
+        def merge_pv(view_menu, perm):
+            """Create permission view menu only if it doesn't exist"""
+            if view_menu and perm and (view_menu, perm) not in all_pvs:
+                print(f"Creating new permission: {perm} for view menu: {view_menu}")
+                self.add_permission_view_menu(view_menu, perm)
+
+        print("\nCreating datasource permissions...")
+        datasources = ConnectorRegistry.get_all_datasources(db.session)
+        for datasource in datasources:
+            merge_pv("datasource_access", datasource.get_perm())
+            merge_pv("schema_access", datasource.get_schema_perm())
+
+        print("\nCreating database permissions...")
+        databases = db.session.query(models.Database).all()
+        for database in databases:
+            merge_pv("database_access", database.perm)
+
+        print("\nCreating metrics permissions...")
+        metrics: List[BaseMetric] = []
+        for datasource_class in ConnectorRegistry.sources.values():
+            metrics += list(db.session.query(datasource_class.metric_class).all())

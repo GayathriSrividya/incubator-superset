@@ -14,20 +14,44 @@
 # KIND, either express or implied.  See the License for the
 # specific language governing permissions and limitations
 # under the License.
-from .bart_lines import load_bart_lines
-from .birth_names import load_birth_names
-from .country_map import load_country_map_data
-from .css_templates import load_css_templates
-from .deck import load_deck_dash
-from .energy import load_energy
-from .flights import load_flights
-from .long_lat import load_long_lat_data
-from .misc_dashboard import load_misc_dashboard
-from .multi_line import load_multi_line
-from .multiformat_time_series import load_multiformat_time_series
-from .paris import load_paris_iris_geojson
-from .random_time_series import load_random_time_series_data
-from .sf_population_polygons import load_sf_population_polygons
-from .tabbed_dashboard import load_tabbed_dashboard
-from .unicode_test_data import load_unicode_test_data
-from .world_bank import load_world_bank_health_n_pop
+
+"""Example data and helper functions."""
+# All example modules must be imported after app initialization to avoid
+# circular dependencies
+def load_examples():
+    """Load all example data"""
+    from .bart_lines import load_bart_lines
+    from .birth_names import load_birth_names
+    from .country_map import load_country_map_data
+    from .css_templates import load_css_templates
+    from .deck import load_deck_dash
+    from .energy import load_energy
+    from .flights import load_flights
+    from .long_lat import load_long_lat_data
+    from .misc_dashboard import load_misc_dashboard
+    from .multi_line import load_multi_line
+    from .multiformat_time_series import load_multiformat_time_series
+    from .paris import load_paris_iris_geojson
+    from .random_time_series import load_random_time_series_data
+    from .sf_population_polygons import load_sf_population_polygons
+    from .tabbed_dashboard import load_tabbed_dashboard
+    from .unicode_test_data import load_unicode_test_data
+    from .world_bank import load_world_bank_health_n_pop
+
+    load_bart_lines()
+    load_birth_names()
+    load_country_map_data()
+    load_css_templates()
+    load_deck_dash()
+    load_energy()
+    load_flights()
+    load_long_lat_data()
+    load_misc_dashboard()
+    load_multi_line()
+    load_multiformat_time_series()
+    load_paris_iris_geojson()
+    load_random_time_series_data()
+    load_sf_population_polygons()
+    load_tabbed_dashboard()
+    load_unicode_test_data()
+    load_world_bank_health_n_pop()
