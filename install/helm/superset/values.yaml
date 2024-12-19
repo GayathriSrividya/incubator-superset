@@ -60,3 +60,11 @@ nodeSelector: {}
 tolerations: []
 
 affinity: {}
+
+# Initialize test users during deployment
+initTestUsers: true
+
+# Extra environment variables that will be passed into the superset container
+extraEnv: {}
+  # SUPERSET_ENV: production
+  # SUPERSET_LOAD_EXAMPLES: yes

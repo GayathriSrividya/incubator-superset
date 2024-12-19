@@ -1,0 +1,52 @@
+apiVersion: batch/v1
+kind: Job
+metadata:
+  name: {{ template "superset.fullname" . }}-init-db
+  labels:
+    app: {{ template "superset.name" . }}
+    chart: {{ template "superset.chart" . }}
+    release: {{ .Release.Name }}
+    heritage: {{ .Release.Service }}
+  annotations:
+    "helm.sh/hook": post-install,post-upgrade
+    "helm.sh/hook-weight": "1"
+    "helm.sh/hook-delete-policy": hook-succeeded
+spec:
+  template:
+    metadata:
+      labels:
+        app: {{ template "superset.name" . }}
+        release: {{ .Release.Name }}
+    spec:
+      restartPolicy: OnFailure
+      containers:
+        - name: {{ .Chart.Name }}-init-db
+          image: "{{ .Values.image.repository }}:{{ .Values.image.tag }}"
+          imagePullPolicy: {{ .Values.image.pullPolicy }}
+          command:
+            - /bin/sh
+            - -c
+            - |
+              # Wait for database
+              echo "Waiting for database..."
+              until superset db upgrade; do
+                echo "Database not ready, retrying in 5 seconds..."
+                sleep 5
+              done
+              
+              # Initialize Superset
+              echo "Initializing Superset..."
+              superset init
+              
+              # Additional initialization if needed
+              if [ "${INIT_TEST_USERS}" = "true" ]; then
+                echo "Creating test users..."
+                superset init
+              fi
+          env:
+            - name: INIT_TEST_USERS
+              value: {{ .Values.initTestUsers | default false | quote }}
+            {{- range $key, $value := .Values.extraEnv }}
+            - name: {{ $key }}
+              value: {{ $value | quote }}
+            {{- end }}

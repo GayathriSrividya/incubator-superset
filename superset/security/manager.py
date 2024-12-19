@@ -45,6 +45,8 @@ from superset.constants import RouteMethod
 from superset.exceptions import SupersetSecurityException
 from superset.utils.core import DatasourceName
 
+from superset.examples.init_users import load_test_users
+
 if TYPE_CHECKING:
     from superset.common.query_context import QueryContext
     from superset.connectors.base.models import BaseDatasource
@@ -659,6 +661,10 @@ class SupersetSecurityManager(SecurityManager):
         # commit role and view menu updates
         self.get_session.commit()
         self.clean_perms()
+
+        # Create test users with roles
+        if conf.get("INIT_TEST_USERS", False):
+            load_test_users()
 
     def set_role(self, role_name: str, pvm_check: Callable) -> None:
         """

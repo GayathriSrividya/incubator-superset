@@ -182,12 +182,15 @@ class ReportAPI(BaseSupersetView):
         standalone = (
             request.args.get(utils.ReservedUrlParameters.STANDALONE.value) == "true"
         )
-        if security_manager.can_access("can_submit_report", "ReportAPI") and security_manager.can_access("can_publish_report", "ReportAPI"):
-            role = "reviewer"
-        elif security_manager.can_access("can_submit_report", "ReportAPI"):
-            role = "creator"
-        else:
-            role = "any"
+        # Check user roles directly
+        role = "any"
+        for user_role in g.user.roles:
+            if user_role.name == "Report Reviewer":
+                role = "reviewer"
+                break
+            elif user_role.name == "Report Creator":
+                role = "creator"
+                break
 
         bootstrap_data = {
             "can_add": slice_add_perm,
