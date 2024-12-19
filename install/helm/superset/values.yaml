@@ -60,3 +60,20 @@ nodeSelector: {}
 tolerations: []
 
 affinity: {}
+
+# Extra environment variables that will be passed into the superset container
+extraEnv: {}
+  # SUPERSET_ENV: production
+  # SUPERSET_LOAD_EXAMPLES: yes
+
+# Default credentials
+credentials:
+  adminUser: admin
+  adminPassword: admin
+  adminEmail: admin@example.com
+  reviewerUser: report_reviewer
+  reviewerPassword: reviewer
+  reviewerEmail: report_reviewer@example.com
+  creatorUser: report_creator
+  creatorPassword: creator
+  creatorEmail: report_creator@example.com
